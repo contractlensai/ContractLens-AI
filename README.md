@@ -10,10 +10,9 @@
 
 
 # Run and deploy our ContractLens-Ai
-This contains everything you need to run your app locally.
+This contains everything you need to run our app locally.
 
-View our app in AI Studio: https://ai.studio/apps/drive/1rAYlDhjvMQiWHAUrC_ta4DhtrljLXIHM
-
+View our app : https://contractlens-ai.netlify.app/
 ## Run Locally
 
 **Prerequisites:**  Node.js
