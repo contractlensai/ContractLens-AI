@@ -3,10 +3,12 @@ import React from 'react';
 
 interface HealthScoreProps {
   score: number;
-  verdict: string;
+  verdict?: string;
 }
 
 export const HealthScore: React.FC<HealthScoreProps> = ({ score, verdict }) => {
+  const resolvedVerdict = verdict || (score >= 80 ? 'Safe' : score >= 50 ? 'Review' : 'High Risk');
+
   const getColor = (s: number) => {
     if (s >= 80) return 'text-emerald-600 dark:text-emerald-500';
     if (s >= 50) return 'text-amber-600 dark:text-amber-500';
@@ -27,7 +29,7 @@ export const HealthScore: React.FC<HealthScoreProps> = ({ score, verdict }) => {
       </div>
       <div className="sm:text-right">
         <span className={`px-4 py-1 rounded-full text-sm font-bold uppercase tracking-widest ${getColor(score)} bg-white dark:bg-white/5 border border-current inline-block mb-2 shadow-sm`}>
-          {verdict}
+          {resolvedVerdict}
         </span>
         <p className="text-xs text-slate-500 dark:text-slate-400 max-w-[150px] sm:ml-auto">
           {score < 50 ? 'Immediate legal review or heavy negotiation recommended.' : score < 80 ? 'Standard agreement with some risks.' : 'Highly favorable for you.'}

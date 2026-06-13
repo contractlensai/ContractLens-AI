@@ -2,23 +2,32 @@ import { supabase } from './supabaseClient';
 import { ContractAuditResult, RedFlag, AuditRecord } from '../types';
 
 export const contractService = {
-    async saveAudit(userId: string, title: string, result: ContractAuditResult): Promise<string> {
-        // 1. Insert into contracts table
+    async saveAudit(userId: string, title: string, result: ContractAuditResult, privacyMode = false, contractText?: string): Promise<string> {
+        // Ensure the request is performed by the authenticated user (RLS)
+        const { data: userData, error: userError } = await supabase.auth.getUser();
+        if (userError) throw userError;
+        const user = userData.user;
+        if (!user) throw new Error('User not authenticated');
+
+        if (userId && userId !== user.id) {
+            throw new Error('Authenticated user does not match provided userId');
+        }
+
+        // 1. Insert into contracts table using the authenticated user's id
         const { data: contractData, error: contractError } = await supabase
             .from('contracts')
             .insert({
-                user_id: userId,
-                contract_type: result.contract_type || 'Unknown',
-                health_score: result.healthScore,
-                summary: result.summary,
+                user_id: user.id,
+                title: title,
+                contract_text: contractText || result.summary || '',
+                privacy_mode: privacyMode,
             })
-
             .select()
             .single();
 
         if (contractError) throw contractError;
 
-        const contractId = contractData.id;
+        const contractId = contractData.id as string;
 
         // 2. Insert into risks table
         if (result.redFlags && result.redFlags.length > 0) {
@@ -38,6 +47,37 @@ export const contractService = {
         }
 
         return contractId;
+    },
+
+    // Development helper to test inserting a contract using the current authenticated user (respects RLS)
+    async testSupabaseInsert() {
+        try {
+            const { data: userData, error: userError } = await supabase.auth.getUser();
+            if (userError) throw userError;
+            const user = userData.user;
+            if (!user) {
+                console.error('No authenticated user found — please login first');
+                return;
+            }
+
+            const { data, error } = await supabase.from('contracts').insert({
+                user_id: user.id,
+                title: 'Test Contract',
+                contract_text: 'This is a Supabase connection test',
+                privacy_mode: false,
+            }).select().single();
+
+            if (error) {
+                console.error('Supabase insert failed:', error.message || error);
+                return;
+            }
+
+            console.log('Inserted contract id:', data.id);
+            return data;
+        } catch (err: any) {
+            console.error('testSupabaseInsert error:', err.message || err);
+            throw err;
+        }
     },
 
     async getUserContracts(userId: string) {

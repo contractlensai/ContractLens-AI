@@ -90,11 +90,11 @@ const App: React.FC = () => {
     setLoading('analyzing');
     setError(null);
     try {
-      const auditResult = await analyzeContract(contractText);
+      const auditResult = await analyzeContract(contractText, 'freelancer');
 
       if (!privacyMode) {
         const title = contractTitle || `Audit ${new Date().toLocaleDateString()}`;
-        await contractService.saveAudit(user.id, title, auditResult);
+        await contractService.saveAudit(user.id, title, auditResult, privacyMode, contractText);
       }
 
       setResult(auditResult);
