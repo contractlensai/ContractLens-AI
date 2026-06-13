@@ -2,10 +2,10 @@
 </div>
 <img width="1535" height="612" alt="image" src="https://github.com/user-attachments/assets/d8cbaaf4-ece5-41ef-8c0d-6d6e76da5211" />
 
-# Run and deploy your AI Studio app
+# Run and deploy our ContractLens-Ai
 This contains everything you need to run your app locally.
 
-View your app in AI Studio: https://ai.studio/apps/drive/1rAYlDhjvMQiWHAUrC_ta4DhtrljLXIHM
+View our app in AI Studio: https://ai.studio/apps/drive/1rAYlDhjvMQiWHAUrC_ta4DhtrljLXIHM
 
 ## Run Locally
 
